@@ -58,8 +58,27 @@
 
     <!-- Start Quiz Button -->
     <section>
-      <button id="startQuiz"> Start Quiz</button>
+      <button id="startQuiz" onclick="startQuiz()">Start Quiz</button>
     </section>
   </div>
+
+  <script>
+    function startQuiz() {
+      // Get selected values
+      const quizType = document.querySelector('input[name="quizType"]:checked').value;
+      const questionCount = document.getElementById('questionCount').value;
+      const difficulty = document.querySelector('input[name="difficulty"]:checked').value;
+      const timeLimit = document.getElementById('timeLimit').value;
+
+      // Only proceed if artist quiz is selected
+      if (quizType === 'artist') {
+        // Construct URL with parameters
+        const url = `../Vladi site/quiz.html?questions=${questionCount}&time=${timeLimit}&difficulty=${difficulty}`;
+        window.location.href = url;
+      } else {
+        alert('Please select "Guess the Artist" quiz type');
+      }
+    }
+  </script>
 </body>
 </html>
