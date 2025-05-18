@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz Setup</title>
+  <link rel="stylesheet" href="page1.css" />
+</head>
+<body>
+  <div class="quiz-setup-container">
+    <h1>Set Up Your Quiz</h1>
+
+    <!-- Quiz Type -->
+    <section>
+      <h2>Choose Quiz Type</h2>
+      <label><input type="radio" name="quizType" value="song" checked /> Guess the Song</label><br />
+      <label><input type="radio" name="quizType" value="artist" /> Guess the Artist</label><br />
+      <label><input type="radio" name="quizType" value="lyrics" /> Complete the Lyrics</label><br />
+      <label><input type="radio" name="quizType" value="random" /> Random Mix</label>
+    </section>
+
+    <!-- Number of Questions -->
+    <section>
+      <h2>Number of Questions</h2>
+      <select id="questionCount">
+        <option value="5">5</option>
+        <option value="10" selected>10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+      </select>
+    </section>
+
+    <!-- Difficulty -->
+    <section>
+      <h2>Difficulty</h2>
+      <label><input type="radio" name="difficulty" value="easy" checked /> Easy</label><br />
+      <label><input type="radio" name="difficulty" value="medium" /> Medium</label><br />
+      <label><input type="radio" name="difficulty" value="hard" /> Hard</label>
+    </section>
+
+    <!-- Time Limit -->
+    <section>
+      <h2>Time Limit per Question</h2>
+      <select id="timeLimit">
+        <option value="10">10 seconds</option>
+        <option value="20">20 seconds</option>
+        <option value="30">30 seconds</option>
+        <option value="none" selected>No Time Limit</option>
+      </select>
+    </section>
+
+    <!-- Genres Summary -->
+    <section>
+      <h2>Selected Genres</h2>
+      <p id="genreList">Pop, Rock, Hip-Hop</p>
+      <a href="genres.html">Edit Preferences</a>
+    </section>
+
+    <!-- Start Quiz Button -->
+    <section>
+      <button id="startQuiz" onclick="startQuiz()">Start Quiz</button>
+    </section>
+  </div>
+
+  <script>
+    function startQuiz() {
+      // Get selected values
+      const quizType = document.querySelector('input[name="quizType"]:checked').value;
+      const questionCount = document.getElementById('questionCount').value;
+      const difficulty = document.querySelector('input[name="difficulty"]:checked').value;
+      const timeLimit = document.getElementById('timeLimit').value;
+
+      // Only proceed if artist quiz is selected
+      if (quizType === 'artist') {
+        // Construct URL with parameters
+        const url = `../Vladi site/quiz.html?questions=${questionCount}&time=${timeLimit}&difficulty=${difficulty}`;
+        window.location.href = url;
+      } else {
+        alert('Please select "Guess the Artist" quiz type');
+      }
+    }
+  </script>
+</body>
+</html>

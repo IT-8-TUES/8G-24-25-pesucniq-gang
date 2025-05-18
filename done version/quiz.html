@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Artist Quiz</title>
+    <style>
+        body {
+            background-image: url('../Markov_IT_site/image.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            color: white;
+            font-family: Arial;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .quiz-box {
+            background-color: rgba(0, 0, 0, 0.25);
+            min-width: 600px;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 40px 40px 30px 40px;
+            border-radius: 12px;
+            box-shadow: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .question {
+            margin: 30px 0 20px 0;
+            font-size: 22px;
+            font-weight: bold;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 600px;
+            margin: 30px auto 20px auto;
+        }
+
+        .options button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 18px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+            width: 100%;
+            transition: all 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .options button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 230, 118, 0.3);
+        }
+
+        .options button.selected {
+            background-color: #00e676 !important;
+            color: black;
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        .options button.correct {
+            background-color: #00e676 !important;
+            color: black;
+        }
+
+        .options button.wrong {
+            background-color: #ff4444 !important;
+            color: white;
+        }
+
+        .options button:disabled {
+            opacity: 0.7;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            width: 100%;
+            max-width: 600px;
+            margin: 30px auto 0 auto;
+        }
+
+        .nav-button {
+            flex: 1;
+            padding: 18px 0;
+            font-size: 20px;
+            border-radius: 8px;
+            background: #666;
+            color: white;
+            border: none;
+            transition: background 0.2s;
+        }
+
+        .nav-button:disabled {
+            background: #333;
+            color: #888;
+            cursor: not-allowed;
+        }
+
+        .exit-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+            z-index: 1000;
+        }
+
+        .exit-button:hover {
+            background: #ff0000;
+        }
+
+        .results {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .results h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #00e676;
+        }
+
+        .results p {
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+
+        .results button {
+            padding: 15px 30px;
+            font-size: 18px;
+            margin: 10px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .results button:first-of-type {
+            background: #00e676;
+            color: black;
+        }
+
+        .results button:last-of-type {
+            background: #666;
+            color: white;
+        }
+
+        .results button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .review-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .review-table th, .review-table td {
+            border: 1px solid #444;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .review-table th {
+            background: #333;
+            color: #00e676;
+            font-size: 18px;
+        }
+
+        .review-table td {
+            font-size: 16px;
+        }
+
+        .review-table tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .review-table td.correct {
+            background: rgba(0, 230, 118, 0.2);
+            color: #00e676;
+            border-left: 4px solid #00e676;
+        }
+
+        .review-table td.wrong {
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+            border-left: 4px solid #ff4444;
+        }
+
+        .review-table td.selected {
+            font-weight: bold;
+        }
+
+        .stats-button {
+            background: #666;
+            color: white;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            margin: 20px 10px;
+            transition: all 0.3s;
+        }
+
+        .stats-button:hover {
+            background: #888;
+            transform: scale(1.05);
+        }
+
+        .stats-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .stats-content {
+            background: rgba(0, 0, 0, 0.8);
+            margin: 50px auto;
+            padding: 30px;
+            max-width: 800px;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .stats-header h2 {
+            color: #00e676;
+            font-size: 32px;
+            margin: 0;
+        }
+
+        .close-stats {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .close-stats:hover {
+            background: #ff0000;
+            transform: scale(1.05);
+        }
+
+        .stats-summary {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            min-width: 150px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .stat-box:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-box h3 {
+            color: #00e676;
+            margin: 0 0 10px 0;
+        }
+
+        .stat-box p {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .correct-stat {
+            color: #00e676;
+        }
+
+        .wrong-stat {
+            color: #ff4444;
+        }
+
+        .flash-red {
+            animation: flashRed 0.7s;
+        }
+
+        @keyframes flashRed {
+            0% { box-shadow: 0 0 0 0 #ff4444; }
+            50% { box-shadow: 0 0 40px 10px #ff4444; }
+            100% { box-shadow: 0 0 0 0 #ff4444; }
+        }
+
+        /* Mini analog countdown clock */
+        .mini-clock {
+            position: absolute;
+            top: 18px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: rgba(34,34,34,0.7);
+            border: 2px solid #00e676;
+            border-radius: 50%;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .mini-clock-face {
+            position: relative;
+            width: 48px;
+            height: 48px;
+        }
+        .mini-hand {
+            position: absolute;
+            left: 50%;
+            bottom: 50%;
+            background: #ff4444;
+            width: 3px;
+            height: 22px;
+            border-radius: 2px;
+            transform-origin: 50% 100%;
+        }
+        .mini-center {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .mini-clock-time {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            pointer-events: none;
+        }
+
+        /* Timer styles */
+        .timer-container {
+            width: 60px;
+            height: 60px;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .timer-circle {
+            width: 100%;
+            height: 100%;
+            border: 4px solid #666;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+        }
+
+        .timer-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            clip: rect(0px, 60px, 60px, 30px);
+        }
+
+        .timer-progress-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            clip: rect(0px, 30px, 60px, 0px);
+            background-color: #00e676;
+            transform: rotate(0deg);
+            transition: transform 1s linear;
+        }
+
+        .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* Add new animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-box" id="quiz-box">
+        <button class="exit-button" onclick="confirmExit()">Exit Quiz</button>
+        <div class="mini-clock" id="mini-clock" style="display:none;">
+            <div class="mini-clock-face">
+                <div class="mini-hand" id="mini-second-hand"></div>
+                <div class="mini-center"></div>
+                <div class="mini-clock-time" id="mini-clock-time"></div>
+            </div>
+        </div>
+        <div id="question-box">
+            <div class="timer-container" id="timer-container" style="display: none;">
+                <div class="timer-circle">
+                    <div class="timer-progress">
+                        <div class="timer-progress-fill" id="timer-progress"></div>
+                    </div>
+                </div>
+                <div class="timer-text" id="timer-text"></div>
+            </div>
+            <h2>Question <span id="question-number">1</span></h2>
+            <div class="question" id="question-text"></div>
+            <div class="options" id="options"></div>
+            <div class="navigation-buttons">
+                <button class="nav-button" onclick="previousQuestion()" id="back-button" disabled>Back</button>
+                <button class="nav-button" onclick="nextQuestion()" id="next-button" disabled>Next Question</button>
+            </div>
+        </div>
+
+        <div class="results" id="results">
+            <h2>Quiz Complete!</h2>
+            <p>Your Score: <span id="score">0</span></p>
+            <button onclick="restartQuiz()">Start New Quiz</button>
+            <button onclick="goToStart()">Back to Start</button>
+            <div id="review"></div>
+        </div>
+    </div>
+
+    <script>
+        // All questions
+        const allQuestions = [
+            // Pop Music Questions (Easy)
+            {
+                question: "Which singer is known as the 'Queen of Pop'?",
+                options: ["Beyoncé", "Madonna", "Taylor Swift", "Ariana Grande"],
+                correct: 1,
+                difficulty: 'easy'
+            },
+            {
+                question: "Who sang the hit 'Bad Guy'?",
+                options: ["Dua Lipa", "Billie Eilish", "Olivia Rodrigo", "Katy Perry"],
+                correct: 1,
+                difficulty: 'easy'
+            },
+            {
+                question: "Which boy band had hits like 'What Makes You Beautiful'?",
+                options: ["Backstreet Boys", "NSYNC", "One Direction", "Jonas Brothers"],
+                correct: 2,
+                difficulty: 'easy'
+            },
+            {
+                question: "Which artist released the album '1989'?",
+                options: ["Lady Gaga", "Taylor Swift", "Rihanna", "Adele"],
+                correct: 1,
+                difficulty: 'easy'
+            },
+            {
+                question: "Who is famous for the song 'Firework'?",
+                options: ["Katy Perry", "Britney Spears", "Christina Aguilera", "P!nk"],
+                correct: 0,
+                difficulty: 'easy'
+            },
+            {
+                question: "Which pop star was part of the group Destiny's Child?",
+                options: ["Rihanna", "Beyoncé", "Nicki Minaj", "Alicia Keys"],
+                correct: 1,
+                difficulty: 'easy'
+            },
+            {
+                question: "Who sang 'Shape of You'?",
+                options: ["Justin Bieber", "Ed Sheeran", "Shawn Mendes", "Bruno Mars"],
+                correct: 1,
+                difficulty: 'easy'
+            },
+            {
+                question: "Which artist is known for the hit 'Rolling in the Deep'?",
+                options: ["Adele", "Sia", "Sam Smith", "Jessie J"],
+                correct: 0,
+                difficulty: 'easy'
+            },
+            {
+                question: "Who performed 'Poker Face'?",
+                options: ["Lady Gaga", "Kesha", "Fergie", "Gwen Stefani"],
+                correct: 0,
+                difficulty: 'easy'
+            },
+            {
+                question: "Which singer is nicknamed 'The Material Girl'?",
+                options: ["Cher", "Madonna", "Cyndi Lauper", "Whitney Houston"],
+                correct: 1,
+                difficulty: 'easy'
+            },
+            {
+                question: "Who released the album 'Sweetener'?",
+                options: ["Selena Gomez", "Ariana Grande", "Demi Lovato", "Miley Cyrus"],
+                correct: 1,
+                difficulty: 'easy'
+            },
+            {
+                question: "Which artist sang 'Can't Stop the Feeling!' for the movie Trolls?",
+                options: ["Justin Timberlake", "Bruno Mars", "Pharrell Williams", "Jason Derulo"],
+                correct: 0,
+                difficulty: 'easy'
+            },
+            {
+                question: "Who had a hit with 'Shake It Off'?",
+                options: ["Taylor Swift", "Meghan Trainor", "Carly Rae Jepsen", "Lorde"],
+                correct: 0,
+                difficulty: 'easy'
+            },
+            {
+                question: "Which pop star starred in Hannah Montana?",
+                options: ["Selena Gomez", "Miley Cyrus", "Demi Lovato", "Hilary Duff"],
+                correct: 1,
+                difficulty: 'easy'
+            },
+            {
+                question: "Who sang 'Uptown Funk'?",
+                options: ["Bruno Mars & Mark Ronson", "Justin Timberlake", "Pharrell Williams", "The Weeknd"],
+                correct: 0,
+                difficulty: 'easy'
+            },
+            {
+                question: "Which artist is known for the song 'Roar'?",
+                options: ["Katy Perry", "P!nk", "Kesha", "Avril Lavigne"],
+                correct: 0,
+                difficulty: 'easy'
+            },
+            {
+                question: "Who released the album Lover?",
+                options: ["Taylor Swift", "Ariana Grande", "Billie Eilish", "Dua Lipa"],
+                correct: 0,
+                difficulty: 'easy'
+            },
+            {
+                question: "Which singer performed 'Havana'?",
+                options: ["Selena Gomez", "Camila Cabello", "Becky G", "Jennifer Lopez"],
+                correct: 1,
+                difficulty: 'easy'
+            },
+            {
+                question: "Who sang 'Hello' in 2015?",
+                options: ["Adele", "Sia", "Sam Smith", "Ellie Goulding"],
+                correct: 0,
+                difficulty: 'easy'
+            },
+            {
+                question: "Which artist is known for the song 'Dynamite'?",
+                options: ["BTS", "BLACKPINK", "EXO", "TWICE"],
+                correct: 0,
+                difficulty: 'easy'
+            },
+            // Rock Music Questions
+            {
+                question: "Which band sang 'Sweet Child O' Mine'?",
+                options: ["Led Zeppelin", "Guns N' Roses", "AC/DC", "The Rolling Stones"],
+                correct: 1,
+                difficulty: 'medium'
+            },
+            {
+                question: "Who is the lead singer of Queen?",
+                options: ["Freddie Mercury", "Robert Plant", "Mick Jagger", "Steven Tyler"],
+                correct: 0,
+                difficulty: 'medium'
+            },
+            {
+                question: "Which band wrote 'Smells Like Teen Spirit'?",
+                options: ["Green Day", "Pearl Jam", "Nirvana", "Foo Fighters"],
+                correct: 2,
+                difficulty: 'medium'
+            },
+            {
+                question: "Who sang 'Imagine'?",
+                options: ["Paul McCartney", "John Lennon", "Elton John", "David Bowie"],
+                correct: 1,
+                difficulty: 'medium'
+            },
+            {
+                question: "Which band is known for 'Hotel California'?",
+                options: ["The Eagles", "Fleetwood Mac", "The Doors", "Lynyrd Skynyrd"],
+                correct: 0,
+                difficulty: 'medium'
+            },
+            {
+                question: "Who is the frontman of U2?",
+                options: ["Bono", "Chris Martin", "Brandon Flowers", "Thom Yorke"],
+                correct: 0,
+                difficulty: 'medium'
+            },
+            {
+                question: "Which band performed 'Stairway to Heaven'?",
+                options: ["Pink Floyd", "Led Zeppelin", "The Who", "Deep Purple"],
+                correct: 1,
+                difficulty: 'medium'
+            },
+            {
+                question: "Who sang 'Born in the U.S.A.'?",
+                options: ["Bruce Springsteen", "Billy Joel", "Tom Petty", "Bob Seger"],
+                correct: 0,
+                difficulty: 'medium'
+            },
+            {
+                question: "Which band is famous for 'Another Brick in the Wall'?",
+                options: ["Pink Floyd", "The Beatles", "The Rolling Stones", "The Who"],
+                correct: 0,
+                difficulty: 'medium'
+            },
+            {
+                question: "Who is the lead singer of The Rolling Stones?",
+                options: ["Mick Jagger", "Keith Richards", "Ronnie Wood", "Charlie Watts"],
+                correct: 0,
+                difficulty: 'medium'
+            },
+            {
+                question: "Which band wrote 'Wonderwall'?",
+                options: ["Blur", "Radiohead", "Oasis", "Coldplay"],
+                correct: 2,
+                difficulty: 'medium'
+            },
+            {
+                question: "Who performed 'Purple Haze'?",
+                options: ["Jimi Hendrix", "Eric Clapton", "Jimmy Page", "Carlos Santana"],
+                correct: 0,
+                difficulty: 'medium'
+            },
+            {
+                question: "Which band is known for 'Enter Sandman'?",
+                options: ["Metallica", "Iron Maiden", "Slayer", "Megadeth"],
+                correct: 0,
+                difficulty: 'medium'
+            },
+            {
+                question: "Who sang 'Livin' on a Prayer'?",
+                options: ["Bon Jovi", "Def Leppard", "Aerosmith", "Van Halen"],
+                correct: 0,
+                difficulty: 'medium'
+            },
+            {
+                question: "Which band wrote 'Paint It Black'?",
+                options: ["The Beatles", "The Rolling Stones", "The Kinks", "The Who"],
+                correct: 1,
+                difficulty: 'medium'
+            },
+            {
+                question: "Who is the lead singer of AC/DC?",
+                options: ["Brian Johnson", "Angus Young", "Bon Scott", "Dave Grohl"],
+                correct: 0,
+                difficulty: 'medium'
+            },
+            {
+                question: "Which band performed 'Highway to Hell'?",
+                options: ["Led Zeppelin", "AC/DC", "Black Sabbath", "Deep Purple"],
+                correct: 1,
+                difficulty: 'medium'
+            },
+            {
+                question: "Who sang 'Radioactive'?",
+                options: ["Foo Fighters", "Imagine Dragons", "Muse", "Nickelback"],
+                correct: 1,
+                difficulty: 'medium'
+            },
+            {
+                question: "Which band is known for 'Paranoid'?",
+                options: ["Black Sabbath", "Metallica", "Iron Maiden", "Slayer"],
+                correct: 0,
+                difficulty: 'medium'
+            },
+            {
+                question: "Who performed 'Sweet Home Alabama'?",
+                options: ["Lynyrd Skynyrd", "Allman Brothers", "Creedence Clearwater Revival", "ZZ Top"],
+                correct: 0,
+                difficulty: 'medium'
+            },
+            // Hip-Hop Questions
+            {
+                question: "Who is known as the 'King of Rap'?",
+                options: ["Jay-Z", "Eminem", "Tupac Shakur", "The Notorious B.I.G."],
+                correct: 3,
+                difficulty: 'hard'
+            },
+            {
+                question: "Which rapper released The Marshall Mathers LP?",
+                options: ["Kanye West", "Eminem", "Drake", "Kendrick Lamar"],
+                correct: 1,
+                difficulty: 'hard'
+            },
+            {
+                question: "Who sang 'Empire State of Mind'?",
+                options: ["Jay-Z & Alicia Keys", "Nas", "50 Cent", "Snoop Dogg"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Which rapper is known for 'In Da Club'?",
+                options: ["50 Cent", "Lil Wayne", "T.I.", "Nelly"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Who performed 'Hotline Bling'?",
+                options: ["Drake", "Future", "Travis Scott", "Lil Uzi Vert"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Which rapper is part of the duo OutKast?",
+                options: ["André 3000", "Kanye West", "J. Cole", "Kid Cudi"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Who sang 'Gold Digger'?",
+                options: ["Kanye West", "Pharrell Williams", "Ludacris", "Busta Rhymes"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Which rapper is known for 'Lose Yourself'?",
+                options: ["Eminem", "Dr. Dre", "Snoop Dogg", "Ice Cube"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Who released To Pimp a Butterfly?",
+                options: ["Kendrick Lamar", "J. Cole", "Travis Scott", "A$AP Rocky"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Which rapper is known for 'Crank That (Soulja Boy)'?",
+                options: ["Soulja Boy", "Lil Jon", "T-Pain", "Flo Rida"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Who performed 'This Is America'?",
+                options: ["Childish Gambino", "Tyler, The Creator", "Logic", "Post Malone"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Which rapper is known for 'Stronger'?",
+                options: ["Kanye West", "Jay-Z", "Pharrell", "Timbaland"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Who sang 'All I Do Is Win'?",
+                options: ["DJ Khaled", "Rick Ross", "Lil Wayne", "T.I."],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Which rapper is known for 'HUMBLE.'?",
+                options: ["Kendrick Lamar", "Drake", "J. Cole", "Travis Scott"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Who performed 'Low' (feat. T-Pain)?",
+                options: ["Flo Rida", "Pitbull", "Nelly", "Akon"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Which rapper is known for 'Still D.R.E.'?",
+                options: ["Dr. Dre & Snoop Dogg", "Ice Cube", "Eazy-E", "Warren G"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Who sang 'Money Trees'?",
+                options: ["Kendrick Lamar", "A$AP Rocky", "Schoolboy Q", "Big Sean"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Which rapper released Tha Carter III?",
+                options: ["Lil Wayne", "Drake", "Nicki Minaj", "Future"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Who performed 'Sicko Mode'?",
+                options: ["Travis Scott", "Post Malone", "Lil Baby", "DaBaby"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Which rapper is known for 'Old Town Road'?",
+                options: ["Lil Nas X", "Billy Ray Cyrus", "Blanco Brown", "Mason Ramsey"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            // Medium Questions
+            {
+                question: "Which artist released the album Future Nostalgia?",
+                options: ["Dua Lipa", "Ariana Grande", "Billie Eilish", "Taylor Swift"],
+                correct: 0,
+                difficulty: 'medium'
+            },
+            {
+                question: "Who sang Levitating (feat. DaBaby)?",
+                options: ["Doja Cat", "Dua Lipa", "Megan Thee Stallion", "Lizzo"],
+                correct: 1,
+                difficulty: 'medium'
+            },
+            {
+                question: "Which artist released the album Chromatica?",
+                options: ["Lady Gaga", "Katy Perry", "Britney Spears", "Madonna"],
+                correct: 0,
+                difficulty: 'medium'
+            },
+            {
+                question: "Who sang 'Blinding Lights'?",
+                options: ["The Weeknd", "Bruno Mars", "Justin Bieber", "Ed Sheeran"],
+                correct: 0,
+                difficulty: 'medium'
+            },
+            {
+                question: "Which artist released the album Folklore?",
+                options: ["Taylor Swift", "Lana Del Rey", "Billie Eilish", "Adele"],
+                correct: 0,
+                difficulty: 'medium'
+            },
+            {
+                question: "Who sang 'Watermelon Sugar'?",
+                options: ["Harry Styles", "Shawn Mendes", "Niall Horan", "Liam Payne"],
+                correct: 0,
+                difficulty: 'medium'
+            },
+            {
+                question: "Which artist released the album After Hours?",
+                options: ["The Weeknd", "Drake", "Post Malone", "Travis Scott"],
+                correct: 0,
+                difficulty: 'medium'
+            },
+            {
+                question: "Who sang 'Don't Start Now'?",
+                options: ["Dua Lipa", "Ariana Grande", "Billie Eilish", "Taylor Swift"],
+                correct: 0,
+                difficulty: 'medium'
+            },
+            {
+                question: "Which artist released the album Fine Line?",
+                options: ["Harry Styles", "Shawn Mendes", "Niall Horan", "Liam Payne"],
+                correct: 0,
+                difficulty: 'medium'
+            },
+            {
+                question: "Who sang 'Circles'?",
+                options: ["Post Malone", "Drake", "The Weeknd", "Travis Scott"],
+                correct: 0,
+                difficulty: 'medium'
+            },
+            // Hard Questions
+            {
+                question: "Which artist recorded a secret jazz album under the pseudonym 'Pineapple Louise'?",
+                options: ["Lady Gaga", "Lana Del Rey", "Katy Perry", "FKA twigs"],
+                correct: 1,
+                difficulty: 'hard'
+            },
+            {
+                question: "Who turned down writing credits for Britney Spears' 'Toxic' to remain anonymous?",
+                options: ["Max Martin", "Cathy Dennis", "Dr. Luke", "Shellback"],
+                correct: 1,
+                difficulty: 'hard'
+            },
+            {
+                question: "Which pop star secretly wrote songs for other artists under the pseudonym 'Ingrid'?",
+                options: ["Taylor Swift", "Katy Perry", "Lady Gaga", "Britney Spears"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Who was the first artist to have a music video reach 1 billion views on YouTube?",
+                options: ["Psy", "Justin Bieber", "Katy Perry", "Taylor Swift"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Which artist's album was the first to be streamed 1 billion times in a week?",
+                options: ["Drake", "Taylor Swift", "Ed Sheeran", "The Weeknd"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Who was the first artist to have a song debut at number one on the Billboard Hot 100?",
+                options: ["Michael Jackson", "Madonna", "Whitney Houston", "Mariah Carey"],
+                correct: 3,
+                difficulty: 'hard'
+            },
+            {
+                question: "Which artist's album was the first to be certified diamond in the streaming era?",
+                options: ["Drake", "Post Malone", "The Weeknd", "Travis Scott"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Who was the first artist to have a song reach 1 billion streams on Spotify?",
+                options: ["Ed Sheeran", "Drake", "The Weeknd", "Post Malone"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Which artist's album was the first to be streamed 1 billion times in a day?",
+                options: ["Drake", "Taylor Swift", "Ed Sheeran", "The Weeknd"],
+                correct: 0,
+                difficulty: 'hard'
+            },
+            {
+                question: "Who was the first artist to have a song reach 2 billion views on YouTube?",
+                options: ["Psy", "Justin Bieber", "Katy Perry", "Taylor Swift"],
+                correct: 0,
+                difficulty: 'hard'
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let questions = [];
+        let userAnswers = [];
+        let timerInterval;
+        let timeLeft;
+        let questionTime;
+        let timedOutQuestions = [];
+
+        // Get parameters from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const questionCount = parseInt(urlParams.get('questions')) || 10;
+        const timeLimit = parseInt(urlParams.get('time')) || 0; // 0 means unlimited time
+        const difficulty = urlParams.get('difficulty') || 'easy';
+
+        // Select random questions and shuffle answers
+        function getRandomQuestions(count) {
+            // Filter questions based on difficulty
+            let filteredQuestions = allQuestions;
+            if (difficulty === 'medium') {
+                filteredQuestions = allQuestions.filter(q => q.difficulty === 'medium');
+            } else if (difficulty === 'hard') {
+                filteredQuestions = allQuestions.filter(q => q.difficulty === 'hard');
+            } else {
+                filteredQuestions = allQuestions.filter(q => q.difficulty === 'easy');
+            }
+
+            const shuffled = [...filteredQuestions].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count).map(q => {
+                // Create a copy of the question
+                const questionCopy = { ...q };
+                // Shuffle the options
+                const options = [...q.options];
+                const correctAnswer = options[q.correct];
+                for (let i = options.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [options[i], options[j]] = [options[j], options[i]];
+                }
+                // Update the correct index
+                questionCopy.options = options;
+                questionCopy.correct = options.indexOf(correctAnswer);
+                return questionCopy;
+            });
+        }
+
+        // Start timer
+        function startTimer() {
+            if (timeLimit === 0) {
+                document.getElementById('timer-container').style.display = 'none';
+                document.getElementById('mini-clock').style.display = 'none';
+                return;
+            }
+            document.getElementById('timer-container').style.display = 'none';
+            document.getElementById('mini-clock').style.display = 'flex';
+            timeLeft = timeLimit;
+            questionTime = timeLimit;
+            updateMiniClock();
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateMiniClock();
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timeUpEffect();
+                }
+            }, 1000);
+        }
+
+        // Mini analog clock update
+        function updateMiniClock() {
+            const hand = document.getElementById('mini-second-hand');
+            const timeText = document.getElementById('mini-clock-time');
+            // Hand starts at top (12 o'clock), moves clockwise
+            const angle = 360 * (1 - (timeLeft / questionTime));
+            hand.style.transform = `translate(-50%,0) rotate(${angle}deg)`;
+            timeText.textContent = timeLeft > 0 ? timeLeft : 0;
+        }
+
+        // Red flash and show correct answer on time up
+        function timeUpEffect() {
+            const box = document.getElementById('quiz-box');
+            box.classList.add('flash-red');
+            setTimeout(() => box.classList.remove('flash-red'), 700);
+            showCorrectAfterTimeout();
+        }
+
+        // Show correct answer when time runs out
+        function showCorrectAfterTimeout() {
+            const q = questions[currentQuestion];
+            const optionsDiv = document.getElementById('options');
+            const buttons = optionsDiv.querySelectorAll('button');
+            
+            // Mark this question as timed out
+            timedOutQuestions[currentQuestion] = true;
+            
+            // Disable all buttons
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.remove('selected', 'wrong', 'correct');
+            });
+
+            // Show correct answer
+            buttons[q.correct].classList.add('correct');
+            
+            // If user had selected an answer, show it as wrong
+            if (userAnswers[currentQuestion] !== null && userAnswers[currentQuestion] !== q.correct) {
+                buttons[userAnswers[currentQuestion]].classList.add('wrong');
+            }
+            
+            document.getElementById('next-button').disabled = false;
+        }
+
+        // Start quiz
+        function startQuiz() {
+            questions = getRandomQuestions(questionCount);
+            userAnswers = new Array(questions.length).fill(null);
+            timedOutQuestions = new Array(questions.length).fill(false);
+            showQuestion();
+            startTimer();
+        }
+
+        // Show current question
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('question-number').textContent = currentQuestion + 1;
+            document.getElementById('question-text').textContent = q.question;
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+            
+            // Check if this question timed out
+            const isTimedOut = timedOutQuestions[currentQuestion];
+            
+            q.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                
+                // If question timed out, disable all buttons
+                if (isTimedOut) {
+                    button.disabled = true;
+                    if (index === q.correct) {
+                        button.classList.add('correct');
+                    }
+                    if (userAnswers[currentQuestion] === index && index !== q.correct) {
+                        button.classList.add('wrong');
+                    }
+                } else {
+                    button.onclick = () => selectAnswer(index);
+                }
+                
+                if (userAnswers[currentQuestion] === index) {
+                    button.classList.add('selected');
+                }
+                optionsDiv.appendChild(button);
+            });
+            
+            document.getElementById('back-button').disabled = currentQuestion === 0;
+            document.getElementById('next-button').disabled = userAnswers[currentQuestion] === null;
+            
+            if (timeLimit > 0 && !isTimedOut) {
+                clearInterval(timerInterval);
+                startTimer();
+            }
+        }
+
+        // Select answer
+        function selectAnswer(selected) {
+            const buttons = document.querySelectorAll('.options button');
+            
+            // Remove selected class from all buttons
+            buttons.forEach(button => button.classList.remove('selected'));
+            
+            // Add selected class to chosen button
+            buttons[selected].classList.add('selected');
+            
+            // Save the answer
+            userAnswers[currentQuestion] = selected;
+            
+            // Enable next button
+            document.getElementById('next-button').disabled = false;
+        }
+
+        // Previous question
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion();
+            }
+        }
+
+        // Next question
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion();
+            } else {
+                clearInterval(timerInterval);
+                showResults();
+            }
+        }
+
+        // Show results
+        function showResults() {
+            score = 0;
+            questions.forEach((q, index) => {
+                if (userAnswers[index] === q.correct) score++;
+            });
+            document.getElementById('question-box').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('score').textContent = score;
+            
+            // Hide timer when showing results
+            document.getElementById('timer-container').style.display = 'none';
+            document.getElementById('mini-clock').style.display = 'none';
+            clearInterval(timerInterval);
+            
+            // Add statistics button
+            const statsButton = document.createElement('button');
+            statsButton.className = 'stats-button';
+            statsButton.textContent = 'View Detailed Statistics';
+            statsButton.onclick = showStats;
+            document.getElementById('results').insertBefore(statsButton, document.getElementById('review'));
+        }
+
+        // Show statistics screen
+        function showStats() {
+            const statsScreen = document.createElement('div');
+            statsScreen.className = 'stats-screen';
+            statsScreen.innerHTML = `
+                <div class="stats-content">
+                    <div class="stats-header">
+                        <h2>Quiz Statistics</h2>
+                        <button class="close-stats" onclick="this.parentElement.parentElement.parentElement.remove()">Close</button>
+                    </div>
+                    <div class="stats-summary">
+                        <div class="stat-box">
+                            <h3>Total Questions</h3>
+                            <p>${questions.length}</p>
+                        </div>
+                        <div class="stat-box">
+                            <h3>Correct Answers</h3>
+                            <p class="correct-stat">${score}</p>
+                        </div>
+                        <div class="stat-box">
+                            <h3>Wrong Answers</h3>
+                            <p class="wrong-stat">${questions.length - score}</p>
+                        </div>
+                        <div class="stat-box">
+                            <h3>Accuracy</h3>
+                            <p>${Math.round((score / questions.length) * 100)}%</p>
+                        </div>
+                    </div>
+                    <div id="stats-review"></div>
+                </div>
+            `;
+            document.body.appendChild(statsScreen);
+            statsScreen.style.display = 'block';
+
+            // Show detailed review in stats
+            const statsReview = document.getElementById('stats-review');
+            let html = '<table class="review-table"><tr><th>#</th><th>Question</th><th>Your Answer</th><th>Correct Answer</th><th>Result</th></tr>';
+            questions.forEach((q, i) => {
+                const userIdx = userAnswers[i];
+                const correctIdx = q.correct;
+                const isCorrect = userIdx === correctIdx;
+                let userCell = '<td class="' + (isCorrect ? 'correct' : 'wrong') + ' selected">' + (userIdx !== null ? q.options[userIdx] : '-') + '</td>';
+                let correctCell = '<td class="correct">' + q.options[correctIdx] + '</td>';
+                let resultCell = '<td class="' + (isCorrect ? 'correct' : 'wrong') + '">' + (isCorrect ? '✓' : '✗') + '</td>';
+                html += `<tr><td>${i+1}</td><td>${q.question}</td>${userCell}${correctCell}${resultCell}</tr>`;
+            });
+            html += '</table>';
+            statsReview.innerHTML = html;
+        }
+
+        // Restart quiz
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('question-box').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            startQuiz();
+        }
+
+        // Go to start screen
+        function goToStart() {
+            window.location.href = '../Markov_IT_site/page1.html';
+        }
+
+        // Exit confirmation
+        function confirmExit() {
+            if (confirm('Are you sure you want to exit the quiz? Your progress will be lost.')) {
+                goToStart();
+            }
+        }
+
+        // Start the quiz when page loads
+        startQuiz();
+    </script>
+</body>
+</html> 

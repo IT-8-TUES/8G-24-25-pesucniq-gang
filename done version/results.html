@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Results</title>
+    <link rel="stylesheet" href="results.css" />
+</head>
+<body>
+    <div class="result-container" id="results">
+        <h1>Your Results</h1>
+        <p>Correct Answers: <strong id="score">0</strong> of <strong id="total">0</strong></p>
+        <button onclick="window.location.href = 'page1.html'" class="restart-btn">Try Again</button>
+        <button onclick="showStats()" class="stats-button">View Statistics</button>
+        <div id="stats-review"></div>
+    </div>
+    <script src="results.js"></script>
+</body>
+</html>
